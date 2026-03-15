@@ -8,23 +8,27 @@ const PORT = process.env.PORT || 3000;
 // In-memory storage for verification codes (in production, use a database)
 const verificationCodes = new Map();
 
-const allowedOrigins = [
-  'https://crystal-flow-canvas.lovable.app',
-  // Add any preview/staging domains here, for example:
-  // 'https://crystal-flow-canvas-xxxx.lovable.app',
-];
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://crystal-flow-canvas.lovable.app,https://lovable.app').split(',').map(o => o.trim()).filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g., curl, Postman)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
+    if (!origin) {
+      console.log('CORS: request without origin allowed');
       return callback(null, true);
     }
 
+    // Allow if origin matches the configured allowlist
+    if (allowedOrigins.includes(origin)) {
+      console.log(`CORS: allowing origin ${origin}`);
+      return callback(null, true);
+    }
+
+    console.warn(`CORS: blocking origin ${origin}`);
     callback(new Error(`CORS policy does not allow access from origin ${origin}`));
   },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
 };
 
 app.use(cors(corsOptions));
