@@ -64,7 +64,7 @@ app.post('/api/send-verification-email', async (req, res) => {
       return res.status(500).json({ error: 'Server configuration error' });
     }
 
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: gmailUser,
