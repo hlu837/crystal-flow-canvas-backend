@@ -83,7 +83,8 @@ app.post('/api/send-verification-email', async (req, res) => {
     res.json({ message: 'Verification email sent' });
   } catch (error) {
     console.error('Email sending error:', error);
-    res.status(500).json({ error: 'Failed to send email' });
+    // Return the underlying error message for debugging (safe for dev; remove in production)
+    res.status(500).json({ error: 'Failed to send email', detail: error?.message || String(error) });
   }
 });
 
