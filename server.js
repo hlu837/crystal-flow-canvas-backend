@@ -88,6 +88,16 @@ app.post('/api/send-verification-email', async (req, res) => {
   }
 });
 
+app.get('/api/debug', (req, res) => {
+  res.json({
+    env: {
+      GMAIL_USER: !!process.env.GMAIL_USER,
+      GMAIL_APP_PASSWORD: !!process.env.GMAIL_APP_PASSWORD,
+      PORT: process.env.PORT || null,
+    },
+  });
+});
+
 app.post('/api/verify-email', (req, res) => {
   const { email, code } = req.body;
   if (!email || !code) {
