@@ -22,8 +22,10 @@ const generateMockActivity = () => [
   { action: 'Hover', target: 'Pricing Card', time: '18s ago' },
 ];
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://crystal-flow-canvas-backend.onrender.com';
+
 const sendVerificationEmail = async (email: string) => {
-  const response = await fetch('https://crystal-flow-canvas.lovable.app/api/send-verification-email', {
+  const response = await fetch(`${API_BASE}/api/send-verification-email`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email })
@@ -36,7 +38,7 @@ const sendVerificationEmail = async (email: string) => {
 };
 
 const verifyEmail = async (email: string, code: string) => {
-  const response = await fetch('https://crystal-flow-canvas.lovable.app/api/verify-email', {
+  const response = await fetch(`${API_BASE}/api/verify-email`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, code })

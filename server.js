@@ -143,6 +143,12 @@ app.post('/api/verify-email', (req, res) => {
   res.json({ message: 'Email verified successfully' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// On Vercel, the server is run as a serverless function and should not call listen().
+// When running locally (node server.js), start the server normally.
+if (import.meta.url === `file://${process.argv[1]}`) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+export default app;
