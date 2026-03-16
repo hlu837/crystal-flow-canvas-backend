@@ -23,14 +23,18 @@ const corsOptions = {
     }
 
     const isAllowedOrigin = () => {
+      // Allow wildcard (e.g., set ALLOWED_ORIGINS='*' in env)
+      if (allowedOrigins.includes('*')) return true;
+
       // Allow exact matches from the configured allowlist
       if (allowedOrigins.includes(origin)) return true;
 
-      // Allow any subdomain of lovable.app (e.g. preview domains)
-      // Matches: https://lovable.app, https://foo.lovable.app, https://sub.foo.lovable.app
+      // Allow any HTTPS subdomain of lovable.app (e.g. preview domains).
+      // Some preview origins include extra dashes and identifiers.
       if (typeof origin === 'string') {
-        const lovablePattern = /^https:\/\/([a-z0-9-]+\.)*lovable\.app(:\d+)?$/i;
-        if (lovablePattern.test(origin)) return true;
+        // Strip the protocol and optional port for a simple hostname check.
+        const hostname = origin.replace(/^https:\/\//i, '').split(':')[0];
+        if (hostname === 'lovable.app' || hostname.endsWith('.lovable.app')) return true;
       }
 
       return false;
