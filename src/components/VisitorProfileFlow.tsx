@@ -22,7 +22,7 @@ const generateMockActivity = () => [
   { action: 'Hover', target: 'Pricing Card', time: '18s ago' },
 ];
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://crystal-flow-canvas-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://ninjaservers.onrender.com';
 
 const sendVerificationEmail = async (email: string) => {
   const response = await fetch(`${API_BASE}/api/send-verification-email`, {
@@ -61,6 +61,7 @@ const VisitorProfileFlow = ({ isOpen, onClose }: VisitorProfileFlowProps) => {
   const [emailPrefix, setEmailPrefix] = useState('');
   const [otp, setOtp] = useState('');
   const [otpRequested, setOtpRequested] = useState(false);
+  const [requestedEmail, setRequestedEmail] = useState('');
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [sessionId] = useState(generateSessionId);
   const [showRecords, setShowRecords] = useState(false);
@@ -90,6 +91,7 @@ const VisitorProfileFlow = ({ isOpen, onClose }: VisitorProfileFlowProps) => {
     try {
       await sendVerificationEmail(fullEmail);
       setOtpRequested(true);
+      setRequestedEmail(fullEmail);
     } catch (err: any) {
       setError(err.message || 'Failed to send verification email');
     } finally {
@@ -102,7 +104,7 @@ const VisitorProfileFlow = ({ isOpen, onClose }: VisitorProfileFlowProps) => {
     setLoadingVerify(true);
     setError('');
     try {
-      await verifyEmail(fullEmail, otp);
+      await verifyEmail(requestedEmail || fullEmail, otp);
       setStep('profile');
     } catch (err: any) {
       setError(err.message || 'Invalid verification code');
@@ -346,11 +348,12 @@ const VisitorProfileFlow = ({ isOpen, onClose }: VisitorProfileFlowProps) => {
                           type="text"
                           value={emailPrefix}
                           onChange={e => setEmailPrefix(e.target.value.replace(/[^a-zA-Z0-9._-]/g, ''))}
+                          disabled={otpRequested}
                           placeholder={emailFormat === 'ninjaFirst' ? 'ninja.2025.servers' : 'user.2025'}
                           className="flex-1 min-w-0 px-4 py-3 text-sm focus:outline-none font-mono"
                           style={{
-                            background: purple.inputBg,
-                            color: purple.textPrimary,
+                            background: otpRequested ? 'rgba(255,255,255,0.06)' : purple.inputBg,
+                            color: otpRequested ? 'rgba(200,200,200,0.8)' : purple.textPrimary,
                             caretColor: purple.accent,
                           }}
                         />
