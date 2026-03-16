@@ -22,7 +22,7 @@ const generateMockActivity = () => [
   { action: 'Hover', target: 'Pricing Card', time: '18s ago' },
 ];
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://ninjaservers.onrender.com';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://crystal-flow-canvas-backend-1.onrender.com';
 
 const sendVerificationEmail = async (email: string) => {
   const response = await fetch(`${API_BASE}/api/send-verification-email`, {
